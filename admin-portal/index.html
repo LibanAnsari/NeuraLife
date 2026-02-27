@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -355,3 +356,362 @@
     <script src="app.js"></script>
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuraLife Admin Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            200: '#bae6fd',
+                            300: '#7dd3fc',
+                            400: '#38bdf8',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .gradient-bg-light {
+            background: linear-gradient(to bottom right, #dbeafe, #e9d5ff, #fce7f3);
+        }
+
+        .dark .gradient-bg-light {
+            background: linear-gradient(to bottom right, #1e293b, #312e81, #4c1d95);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .table-row-hover:hover {
+            background-color: rgba(99, 102, 241, 0.05);
+        }
+
+        .dark .table-row-hover:hover {
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    
+    <!-- Login Screen -->
+    <div id="loginScreen" class="min-h-screen gradient-bg flex items-center justify-center px-4">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-md fade-in">
+            <div class="text-center mb-8">
+                <div class="text-6xl mb-4">🛡️</div>
+                <h1 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">Admin Portal</h1>
+                <p class="text-gray-600 dark:text-gray-300">NeuraLife Management System</p>
+            </div>
+
+            <form id="loginForm" class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Username
+                    </label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                        placeholder="admin1"
+                        required
+                    >
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                        Password
+                    </label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        class="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-2 focus:ring-purple-500 focus:border-transparent transition"
+                        placeholder="••••••"
+                        required
+                    >
+                </div>
+
+                <div id="loginError" class="hidden text-red-500 text-sm text-center bg-red-50 dark:bg-red-900/20 p-3 rounded-lg">
+                    Invalid credentials. Please try again.
+                </div>
+
+                <button 
+                    type="submit" 
+                    class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transform hover:scale-105 transition duration-200 shadow-lg"
+                >
+                    Sign In
+                </button>
+            </form>
+
+            <div class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+                <p>🔒 Secure Admin Access</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="hidden min-h-screen">
+        <!-- Navbar -->
+        <nav class="bg-white dark:bg-gray-800 shadow-lg transition-colors duration-300">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center space-x-3">
+                        <div class="text-3xl">🛡️</div>
+                        <div>
+                            <h1 class="text-xl font-bold text-gray-800 dark:text-white">NeuraLife Admin</h1>
+                            <p class="text-xs text-gray-500 dark:text-gray-400">Management Portal</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center space-x-4">
+                        <!-- Dark Mode Toggle -->
+                        <button 
+                            id="themeToggle" 
+                            class="p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition"
+                            title="Toggle Dark Mode"
+                        >
+                            <span id="themeIcon" class="text-xl">🌙</span>
+                        </button>
+
+                        <!-- Admin Info -->
+                        <div class="flex items-center space-x-3 px-4 py-2 bg-gradient-to-r from-purple-100 to-indigo-100 dark:from-purple-900/30 dark:to-indigo-900/30 rounded-lg">
+                            <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold">
+                                A
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-gray-800 dark:text-white">admin1</p>
+                                <p class="text-xs text-gray-600 dark:text-gray-400">Administrator</p>
+                            </div>
+                        </div>
+
+                        <!-- Logout -->
+                        <button 
+                            id="logoutBtn" 
+                            class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition transform hover:scale-105"
+                        >
+                            Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <div class="gradient-bg-light min-h-screen transition-colors duration-300">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <!-- Total Users -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 card-hover fade-in">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="text-4xl">👥</div>
+                            <div class="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full text-xs font-semibold">
+                                Users
+                            </div>
+                        </div>
+                        <h3 class="text-3xl font-bold text-gray-800 dark:text-white mb-1" id="totalUsers">0</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Total Registered</p>
+                    </div>
+
+                    <!-- Premium Users -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 card-hover fade-in" style="animation-delay: 0.1s">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="text-4xl">⭐</div>
+                            <div class="px-3 py-1 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 rounded-full text-xs font-semibold">
+                                Premium
+                            </div>
+                        </div>
+                        <h3 class="text-3xl font-bold text-gray-800 dark:text-white mb-1" id="premiumUsers">0</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Premium Members</p>
+                    </div>
+
+                    <!-- Therapists -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 card-hover fade-in" style="animation-delay: 0.2s">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="text-4xl">🩺</div>
+                            <div class="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded-full text-xs font-semibold">
+                                Therapists
+                            </div>
+                        </div>
+                        <h3 class="text-3xl font-bold text-gray-800 dark:text-white mb-1" id="totalTherapists">0</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Active Therapists</p>
+                    </div>
+
+                    <!-- Sessions -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 card-hover fade-in" style="animation-delay: 0.3s">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="text-4xl">📅</div>
+                            <div class="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full text-xs font-semibold">
+                                Sessions
+                            </div>
+                        </div>
+                        <h3 class="text-3xl font-bold text-gray-800 dark:text-white mb-1" id="totalSessions">0</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">Total Bookings</p>
+                    </div>
+                </div>
+
+                <!-- Tabs -->
+                <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg mb-6 overflow-hidden transition-colors duration-300">
+                    <div class="flex border-b border-gray-200 dark:border-gray-700">
+                        <button class="tab-btn active px-6 py-4 font-semibold text-purple-600 dark:text-purple-400 border-b-2 border-purple-600 dark:border-purple-400 transition" data-tab="users">
+                            👥 Users
+                        </button>
+                        <button class="tab-btn px-6 py-4 font-semibold text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition" data-tab="therapists">
+                            🩺 Therapists
+                        </button>
+                        <button class="tab-btn px-6 py-4 font-semibold text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition" data-tab="sessions">
+                            📅 Sessions
+                        </button>
+                        <button class="tab-btn px-6 py-4 font-semibold text-gray-600 dark:text-gray-400 hover:text-purple-600 dark:hover:text-purple-400 transition" data-tab="quizzes">
+                            📊 Quiz Results
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tab Content -->
+                <div id="tabContent" class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 transition-colors duration-300">
+                    <!-- Users Tab -->
+                    <div id="usersTab" class="tab-content">
+                        <div class="flex justify-between items-center mb-6">
+                            <h2 class="text-2xl font-bold text-gray-800 dark:text-white">User Management</h2>
+                            <input 
+                                type="text" 
+                                id="userSearch" 
+                                placeholder="Search users..." 
+                                class="px-4 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                            >
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Username</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Email</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Premium</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">NeuraCoins</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody" class="divide-y divide-gray-200 dark:divide-gray-700">
+                                    <!-- Users will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Therapists Tab -->
+                    <div id="therapistsTab" class="tab-content hidden">
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Therapist Management</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Email</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Specialization</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Total Sessions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="therapistsTableBody" class="divide-y divide-gray-200 dark:divide-gray-700">
+                                    <!-- Therapists will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Sessions Tab -->
+                    <div id="sessionsTab" class="tab-content hidden">
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Therapy Sessions</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">User</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Therapist</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Type</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Date & Time</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sessionsTableBody" class="divide-y divide-gray-200 dark:divide-gray-700">
+                                    <!-- Sessions will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Quizzes Tab -->
+                    <div id="quizzesTab" class="tab-content hidden">
+                        <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6">Assessment Results</h2>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">User</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Assessment</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Score</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Result</th>
+                                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="quizzesTableBody" class="divide-y divide-gray-200 dark:divide-gray-700">
+                                    <!-- Quiz results will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+>>>>>>> 8f42418579ec6d512ce83ecf248d8ad6a4c96c7f

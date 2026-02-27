@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 fastapi
 uvicorn[standard]
 sqlalchemy
@@ -12,3 +13,19 @@ langchain-core
 authlib
 httpx
 itsdangerous
+=======
+fastapi
+uvicorn[standard]
+sqlalchemy
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+python-dotenv
+bcrypt
+langchain-google-genai
+langgraph
+langchain-core
+authlib
+httpx
+itsdangerous
+>>>>>>> 8f42418579ec6d512ce83ecf248d8ad6a4c96c7f
