@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuraLife - Therapist Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Dark mode styles */
+        .dark {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --text-primary: #f8fafc;
+            --text-secondary: #cbd5e1;
+            --border-color: #475569;
+        }
+
+        .dark body {
+            background: linear-gradient(to bottom right, #0f172a, #1e293b, #312e81);
+        }
+
+        .dark .bg-white {
+            background-color: var(--bg-secondary) !important;
+            color: var(--text-primary);
+        }
+
+        .dark .text-gray-800 {
+            color: var(--text-primary) !important;
+        }
+
+        .dark .text-gray-700 {
+            color: var(--text-secondary) !important;
+        }
+
+        .dark .text-gray-600 {
+            color: var(--text-secondary) !important;
+        }
+
+        .dark .border-gray-300 {
+            border-color: var(--border-color) !important;
+        }
+
+        .dark .bg-gray-50 {
+            background-color: var(--bg-tertiary) !important;
+        }
+
+        .dark input, .dark textarea {
+            background-color: var(--bg-tertiary) !important;
+            color: var(--text-primary) !important;
+        }
+
+        /* Additional dark mode overrides */
+        .dark .border-gray-100 {
+            border-color: var(--border-color) !important;
+        }
+
+        .dark .border-gray-200 {
+            border-color: var(--border-color) !important;
+        }
+
+        .dark .text-gray-500 {
+            color: #94a3b8 !important;
+        }
+
+        .dark .text-gray-400 {
+            color: #94a3b8 !important;
+        }
+
+        .dark .bg-purple-50 {
+            background-color: rgba(109, 40, 217, 0.1) !important;
+        }
+
+        .dark .bg-yellow-50 {
+            background-color: rgba(251, 191, 36, 0.1) !important;
+        }
+
+        /* Smooth transitions */
+        * {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #a78bfa;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b5cf6;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen transition-colors duration-300">
+    <!-- Navbar -->
+    <nav class="bg-gradient-to-r from-purple-600 to-indigo-600 shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-3">
+                    <span class="text-3xl">🧠</span>
+                    <span class="text-2xl font-bold text-white">NeuraLife</span>
+                    <span class="hidden sm:inline text-purple-200 text-sm font-medium">Therapist Portal</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <!-- Theme Toggle -->
+                    <button 
+                        id="theme-toggle"
+                        onclick="toggleTheme()" 
+                        class="bg-white/20 hover:bg-white/30 text-white p-2 rounded-lg transition flex items-center justify-center w-10 h-10"
+                        title="Toggle theme"
+                    >
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                    <span id="therapist-name" class="text-white font-semibold hidden sm:inline"></span>
+                    <button 
+                        onclick="logout()" 
+                        class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg transition font-medium"
+                    >
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <!-- Login Section -->
+        <div id="login-section" class="max-w-md mx-auto fade-in">
+            <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+                <div class="text-center mb-6">
+                    <div class="text-6xl mb-4">👨‍⚕️</div>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Therapist Login</h2>
+                    <p class="text-gray-600">Access your patient dashboard</p>
+                </div>
+                <form onsubmit="handleLogin(event)">
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                        <input 
+                            type="email" 
+                            id="login-email" 
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                            placeholder="therapist@neuralife.com"
+                        />
+                    </div>
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                        <input 
+                            type="password" 
+                            id="login-password" 
+                            required
+                            class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                            placeholder="Enter password"
+                        />
+                    </div>
+                    <button 
+                        type="submit" 
+                        class="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 rounded-lg font-semibold hover:from-purple-700 hover:to-indigo-700 transition shadow-lg hover:shadow-xl"
+                    >
+                        Login to Portal
+                    </button>
+                </form>
+                <div class="mt-6 p-4 bg-purple-50 rounded-lg border border-purple-200">
+                    <p class="text-sm text-gray-700 font-medium mb-1">💡 Test Credentials:</p>
+                    <p class="text-xs text-gray-600">
+                        Email: <span class="font-mono bg-white px-2 py-1 rounded">liban@neuralife.com</span><br>
+                        Password: <span class="font-mono bg-white px-2 py-1 rounded">123456</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="hidden fade-in">
+            <!-- Welcome Banner -->
+            <div class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl shadow-2xl p-8 mb-8 text-white">
+                <h1 class="text-3xl font-bold mb-2">Welcome back, <span id="welcome-name"></span>! 👋</h1>
+                <p class="text-purple-200">Here's your patient overview for today</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm font-medium">Total Patients</p>
+                            <p id="total-patients" class="text-4xl font-bold text-purple-600 mt-2">0</p>
+                        </div>
+                        <div class="text-5xl">👥</div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm font-medium">Unread Messages</p>
+                            <p id="unread-messages" class="text-4xl font-bold text-indigo-600 mt-2">0</p>
+                        </div>
+                        <div class="text-5xl">💬</div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-gray-600 text-sm font-medium">Pending Requests</p>
+                            <p id="pending-requests" class="text-4xl font-bold text-yellow-600 mt-2">0</p>
+                        </div>
+                        <div class="text-5xl">⏳</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Appointments Section -->
+            <div id="pending-appointments-section" class="bg-white rounded-2xl shadow-2xl p-8 mb-8 border border-gray-100">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-3xl">⏳</span>
+                    <h2 class="text-2xl font-bold text-gray-800">Pending Appointment Requests</h2>
+                </div>
+                <div id="pending-appointments-list" class="space-y-4">
+                    <!-- Pending appointments will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Patients List -->
+            <div class="bg-white rounded-2xl shadow-2xl p-8 border border-gray-100">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="text-3xl">👥</span>
+                    <h2 class="text-2xl font-bold text-gray-800">My Patients</h2>
+                </div>
+                <div id="patients-list" class="space-y-4">
+                    <!-- Patients will be loaded here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Section -->
+        <div id="chat-section" class="hidden fade-in">
+            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100" style="height: calc(100vh - 200px);">
+                <!-- Chat Header -->
+                <div class="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <button 
+                            onclick="backToDashboard()" 
+                            class="text-white hover:bg-white/20 p-2 rounded-lg transition font-bold text-xl"
+                            title="Back to dashboard"
+                        >
+                            ← Back
+                        </button>
+                        <div>
+                            <h3 id="chat-patient-name" class="text-xl font-bold text-white"></h3>
+                            <p class="text-purple-200 text-sm">💬 Patient Chat Session</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 bg-white/20 px-4 py-2 rounded-lg">
+                        <span class="text-white text-sm font-medium">🟢 Active</span>
+                    </div>
+                </div>
+
+                <!-- Messages -->
+                <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50" style="height: calc(100% - 180px);">
+                    <!-- Messages will be loaded here -->
+                </div>
+
+                <!-- Message Input -->
+                <form onsubmit="sendMessage(event)" class="border-t border-gray-200 p-4 bg-white">
+                    <div class="flex gap-3">
+                        <input 
+                            type="text" 
+                            id="message-input" 
+                            placeholder="Type your message to the patient..." 
+                            class="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent outline-none"
+                        />
+                        <button 
+                            type="submit" 
+                            class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-indigo-700 transition shadow-lg hover:shadow-xl"
+                        >
+                            Send 📤
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.jsx"></script>
+    <script>
+        // Theme toggle functionality
+        function toggleTheme() {
+            const html = document.documentElement;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                themeIcon.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                themeIcon.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Load theme preference on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+                themeIcon.textContent = '☀️';
+            } else {
+                themeIcon.textContent = '🌙';
+            }
+        });
+    </script>
+</body>
+</html>
