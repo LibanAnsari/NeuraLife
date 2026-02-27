@@ -1,5 +1,9 @@
-<<<<<<< HEAD
-# Mental Health App Backend
-=======
-# Mental Health App Backend
->>>>>>> 8f42418579ec6d512ce83ecf248d8ad6a4c96c7f
+"""NeuraLife Backend — FastAPI application package.
+
+This package contains the core backend modules:
+- main: FastAPI app, routes, and middleware
+- models: SQLAlchemy ORM models
+- auth: JWT and OAuth authentication
+- database: Database engine and session management
+- chatbot_service: LangGraph chatbot with Google Gemini
+"""

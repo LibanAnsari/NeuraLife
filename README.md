@@ -1,333 +1,385 @@
-# NeuraLife 🧠
+<div align="center">
 
-A comprehensive mental wellness support application with user authentication, resources, chatbot, and mental health assessments.
+# NeuraLife
+
+### A Comprehensive Mental Wellness Platform
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.8+-3776AB?logo=python&logoColor=white)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)](https://reactjs.org)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
+
+NeuraLife is a full-stack mental wellness application that provides AI-powered chatbot support, therapy session management, mood tracking, journaling, sleep tracking, and mental health assessments, all wrapped in a gamified experience with virtual currency and achievements.
+
+[Getting Started](#getting-started) | [Features](#features) | [API Reference](#api-reference) | [Contributing](#contributing)
+
+</div>
+
+---
+
+## Table of Contents
+
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [Project Structure](#project-structure)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Backend Setup](#1-backend-setup-port-8000)
+  - [Frontend Setup](#2-frontend-setup-port-5173)
+  - [Therapist Portal Setup](#3-therapist-portal-setup-port-8080)
+- [Features](#features)
+- [API Reference](#api-reference)
+- [Environment Variables](#environment-variables)
+- [Development](#development)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [License](#license)
+
+## Architecture
+
+```
+                  +------------------+
+                  |   React Frontend |  :5173
+                  |  (Tailwind CSS)  |
+                  +--------+---------+
+                           |
+                  REST API | (Axios)
+                           |
+              +------------+------------+
+              |    FastAPI Backend      |  :8000
+              |  (JWT Auth + OAuth)     |
+              +-----+----------+-------+
+                    |          |
+          +---------+    +-----+-------+
+          | SQLite  |    | Gemini LLM  |
+          | (SQLAlchemy)| | (LangGraph) |
+          +----------+   +-------------+
+                  |
+    +-------------+-------------+
+    |                           |
++---+---+              +-------+-------+
+|Therapist|             | Admin Portal  |
+| Portal  | :8080       |               | :9000
++---------+             +---------------+
+```
 
 ## Tech Stack
 
-**Backend:**
-- FastAPI (Python)
-- SQLite Database
-- JWT Authentication
-- Pydantic for validation
-
-**Frontend:**
-- React 18
-- Tailwind CSS
-- Axios for API calls
-- React Router for navigation
+| Layer          | Technology                           |
+|----------------|--------------------------------------|
+| **Backend**    | FastAPI, SQLAlchemy, SQLite, Uvicorn  |
+| **Auth**       | JWT (python-jose), bcrypt, Google OAuth (Authlib) |
+| **AI/Chatbot** | LangGraph, LangChain, Google Gemini  |
+| **Frontend**   | React 18, Vite, Tailwind CSS, Axios  |
+| **Therapist Portal** | Vanilla JS, Python HTTP Server |
+| **Admin Portal** | HTML/JS, Python HTTP Server        |
 
 ## Project Structure
 
 ```
-NIT/
-├── backend/
-│   ├── app/
-│   │   ├── main.py              # FastAPI app with all endpoints
-│   │   ├── models.py            # Database models (User, Therapist, etc.)
-│   │   ├── auth.py              # JWT authentication logic
-│   │   └── database.py          # Database connection
-│   ├── create_dummy_users.py    # Script to create test users
-│   ├── create_dummy_therapists.py # Script to create test therapists
-│   ├── requirements.txt
-│   ├── run.py                   # Backend entry point
-│   └── mental_health.db         # SQLite database (auto-generated)
-├── frontend/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── Navbar.jsx           # Main navigation with profile dropdown
-│   │   │   ├── PremiumNavbar.jsx    # Premium user navigation
-│   │   │   ├── Login.jsx            # Login/Register page
-│   │   │   ├── Dashboard.jsx        # Main dashboard
-│   │   │   ├── PremiumDashboard.jsx # Premium user dashboard
-│   │   │   ├── Premium.jsx          # NeuraLife+ purchase page
-│   │   │   ├── Resources.jsx        # Mental health resources
-│   │   │   ├── Chatbot.jsx          # AI chatbot
-│   │   │   ├── Quiz.jsx             # Mental health assessments
-│   │   │   ├── PremiumCalendar.jsx  # Therapy session calendar
-│   │   │   ├── TherapySessions.jsx  # Browse & manage therapists
-│   │   │   └── TherapyChat.jsx      # Real-time messaging
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── package.json
-│   └── tailwind.config.js
-├── therapist-portal/
-│   ├── index.html           # Therapist webapp UI
-│   ├── app.jsx               # Therapist portal logic
-│   ├── server.py            # Python HTTP server (port 8080)
-│   └── start_portal.bat     # Startup script
-├── start_backend.bat        # Backend startup script
-├── start_frontend.bat       # Frontend startup script
-└── README.md
+NeuraLife/
++-- backend/                    # FastAPI backend application
+|   +-- app/
+|   |   +-- __init__.py         # App package initializer
+|   |   +-- main.py             # FastAPI app, routes & middleware
+|   |   +-- models.py           # SQLAlchemy ORM models
+|   |   +-- auth.py             # JWT & OAuth authentication
+|   |   +-- database.py         # Database engine & session setup
+|   |   +-- chatbot_service.py  # LangGraph chatbot with Gemini
+|   +-- scripts/                # Database setup & utility scripts
+|   +-- requirements.txt        # Python dependencies
+|   +-- run.py                  # Backend entry point
+|   +-- .env.example            # Environment variable template
++-- frontend/                   # React frontend application
+|   +-- src/
+|   |   +-- components/         # React components
+|   |   |   +-- Dashboard.jsx         # Main user dashboard
+|   |   |   +-- Login.jsx             # Auth page (login/register)
+|   |   |   +-- Chatbot.jsx           # AI chatbot interface
+|   |   |   +-- MoodTracker.jsx       # Mood logging & trends
+|   |   |   +-- Journal.jsx           # Personal journaling
+|   |   |   +-- SleepTracker.jsx      # Sleep quality tracking
+|   |   |   +-- Quiz.jsx              # Mental health assessments
+|   |   |   +-- Resources.jsx         # Curated resource library
+|   |   |   +-- TherapySessions.jsx   # Therapist browsing & booking
+|   |   |   +-- TherapyChat.jsx       # Real-time therapy messaging
+|   |   |   +-- Premium.jsx           # NeuraLife+ purchase page
+|   |   |   +-- BreathingExercises.jsx # Guided breathing exercises
+|   |   |   +-- Navbar.jsx            # Navigation bar
+|   |   +-- App.jsx             # Root component & router
+|   |   +-- main.jsx            # App entry point
+|   +-- package.json            # Node.js dependencies
+|   +-- vite.config.js          # Vite configuration
+|   +-- tailwind.config.js      # Tailwind CSS configuration
++-- therapist-portal/           # Therapist web interface
++-- admin-portal/               # Admin management interface
++-- scripts/                    # Startup & setup scripts
++-- docs/                       # Project documentation
++-- .gitignore
++-- .editorconfig
++-- LICENSE
++-- CONTRIBUTING.md
++-- CODE_OF_CONDUCT.md
++-- CHANGELOG.md
++-- README.md
 ```
 
-## Features
+## Getting Started
 
-### 1. Authentication ✅
-- User registration with username/email/password
-- Login with JWT tokens
-- **Google OAuth Sign-In** 🆕 - One-click sign in with Google account
-- Protected routes
-- Profile dropdown with avatar
+### Prerequisites
 
-### 2. Free User Features 🆓
-- **Dashboard** - Welcome screen with navigation
-- **Resources** - 60+ curated mental health resources
-  - Music playlists (Spotify links)
-  - Guided meditation (YouTube)
-  - Recommended books (Amazon)
-  - Mental health podcasts
-  - Educational videos
-- **AI Chatbot** - Mental health support with conversation history
-- **Quizzes** - Anxiety, depression, and stress assessments
-- **NeuraCoins** - Virtual currency system (5000 coins to start)
+- **Python** 3.8+ ([download](https://www.python.org/downloads/))
+- **Node.js** 16+ ([download](https://nodejs.org/))
+- **npm** (included with Node.js)
 
-### 3. Premium Features ⭐ (NeuraLife+)
-- **Premium Dashboard** - Enhanced interface with stats
-- **Calendar** - Schedule and view therapy sessions
-- **Therapy Sessions** - Browse 10 professional therapists
-- **Real-time Messaging** - Chat with therapists
-- **Therapist Profiles** - View credentials, experience, ratings
-- **Opt-in System** - Connect with multiple therapists
-- **Cost**: 1000 NeuraCoins
+### 1. Backend Setup (Port 8000)
 
-### 4. Therapist Portal 👨‍⚕️
-- **Separate Web Interface** (localhost:8080)
-- **Patient Management** - View all connected users
-- **Bidirectional Messaging** - Reply to patient messages
-- **Dashboard Stats** - Patients, messages, sessions
-- **Professional Profiles** - Specialization, credentials, bio
-
-## Quick Start
-
-### 🚀 Running from Scratch
-
-**Prerequisites:**
-- Python 3.8+
-- Node.js 16+
-- npm or yarn
-
-### 1️⃣ Backend Setup (Port 8000)
-
-```powershell
-# Navigate to backend directory
+```bash
+# Navigate to backend
 cd backend
 
-# Install Python dependencies
+# (Recommended) Create a virtual environment
+python -m venv venv
+source venv/bin/activate        # Windows: venv\Scripts\activate
+
+# Install dependencies
 pip install -r requirements.txt
 
-# Create dummy users and therapists (first time only)
-python create_dummy_users.py
-python create_dummy_therapists.py
+# Configure environment
+cp .env.example .env            # Then edit .env with your API keys
 
-# Start the backend server
+# Initialize test data (first time only)
+python scripts/create_test_users.py
+python scripts/create_therapists.py
+
+# Start the server
 python run.py
 ```
 
-The backend will be available at: `http://localhost:8000`
+The backend API will be available at **http://localhost:8000**.
 
-**Test Users:**
-- Premium User: `test1` / `123456`
-- Free Users: `test2`, `test3`, `test4`, `test5`, `test6` / `123456`
+> **Test Credentials:**
+> - Premium User: `test1` / `123456`
+> - Free Users: `test2` through `test6` / `123456`
+> - Therapists: `ritvik@neuralife.com`, `liban@neuralife.com`, etc. / `123456`
 
-**Test Therapists:**
-- `ritvik@neuralife.com` / `123456`
-- `liban@neuralife.com` / `123456`
-- `yash@neuralife.com` / `123456`
-- `abhisaar@neuralife.com` / `123456`
-- `t1@neuralife.com` to `t6@neuralife.com` / `123456`
+### 2. Frontend Setup (Port 5173)
 
-### 2️⃣ User Frontend Setup (Port 5173)
-
-```powershell
-# Open a new terminal
+```bash
 cd frontend
-
-# Install Node dependencies
 npm install
-
-# Start the development server
 npm run dev
 ```
 
-The user app will be available at: `http://localhost:5173`
+The user app will be available at **http://localhost:5173**.
 
-### 3️⃣ Therapist Portal Setup (Port 8080)
+### 3. Therapist Portal Setup (Port 8080)
 
-```powershell
-# Open a new terminal
+```bash
 cd therapist-portal
-
-# Start the therapist portal server
 python server.py
 ```
 
-The therapist portal will be available at: `http://localhost:8080`
+The therapist portal will be available at **http://localhost:8080**.
 
-### 🎯 All-in-One Startup (Windows)
+### Quick Start (Windows)
 
-You can also use the provided batch files:
+Use the provided batch scripts in the `scripts/` directory:
 
 ```powershell
-# Start backend
-.\start_backend.bat
-
-# Start user frontend (in new terminal)
-.\start_frontend.bat
-
-# Start therapist portal (in new terminal)
-cd therapist-portal
-.\start_portal.bat
+.\scripts\start_backend.bat      # Start backend server
+.\scripts\start_frontend.bat     # Start frontend dev server (new terminal)
 ```
 
-### 📝 Important Notes
+> **Note:** All three servers must be running for full functionality. Start the backend first.
 
-- **All three servers must be running** for full functionality
-- Backend must start **first** before frontend and therapist portal
-- If you encounter database errors, delete `backend/mental_health.db` and run the dummy data scripts again
-- Default ports: Backend (8000), User App (5173), Therapist Portal (8080)
+## Features
 
-## API Endpoints
+### Authentication & Security
+- JWT-based registration and login with token refresh
+- Google OAuth 2.0 sign-in integration
+- Protected routes with role-based access
+- Secure password hashing with bcrypt
 
-### Auth
-- `POST /api/auth/register` - Register new user
-- `POST /api/auth/login` - Login user
-- `GET /api/auth/google/login` - Initiate Google OAuth login 🆕
-- `GET /api/auth/google/callback` - Handle Google OAuth callback 🆕
-- `GET /api/auth/me` - Get current user (with premium status)
+### AI Chatbot
+- Mental health support chatbot powered by **Google Gemini** via **LangGraph**
+- Emotion detection and empathetic response generation
+- Persistent conversation history with session management
+- Crisis resource detection and hotline information
 
-### Resources
-- `GET /api/resources/music` - Get music playlists (12 items)
-- `GET /api/resources/meditation` - Get meditation guides (12 items)
-- `GET /api/resources/books` - Get recommended books (12 items)
-- `GET /api/resources/podcasts` - Get podcasts (12 items)
-- `GET /api/resources/videos` - Get videos (12 items)
+### Mental Health Assessments
+- **Anxiety**, **Depression**, and **Stress** quizzes with scored results
+- Historical result tracking and progress visualization
 
-### Chatbot
-- `POST /api/chatbot/message` - Send message to chatbot
-- `GET /api/chatbot/history` - Get chat history
+### Wellness Tracking
+- **Mood Tracker** � Daily mood logging with emoji-based input, intensity scale, and activity tags
+- **Journal** � Personal entries with guided prompts and mood association
+- **Sleep Tracker** � Bedtime/wake time logging with quality ratings and duration analysis
+- **Goal System** � Custom wellness goals with daily/weekly tracking, streaks, and completions
 
-### Quiz
-- `GET /api/quiz/list` - Get available quizzes
-- `GET /api/quiz/{id}` - Get specific quiz
-- `POST /api/quiz/{id}/submit` - Submit quiz answers
-- `GET /api/quiz/results/{id}` - Get quiz results
+### Resource Library
+- 60+ curated mental health resources across 5 categories:
+  - Music playlists (Spotify) | Guided meditation (YouTube) | Recommended books (Amazon) | Podcasts | Educational videos
 
-### Premium
-- `POST /api/premium/purchase` - Purchase NeuraLife+ (1000 coins)
+### Premium System (NeuraLife+)
+- Virtual currency (**NeuraCoins**) earned through platform engagement
+- Premium dashboard with enhanced analytics
+- Therapy session calendar and scheduling
+- Unlocked at 1,000 NeuraCoins
 
-### Therapy (Premium Users)
-- `GET /api/therapy/therapists` - Get all therapists
-- `POST /api/therapy/opt-in` - Connect with a therapist
-- `GET /api/therapy/my-therapists` - Get user's therapists
-- `GET /api/therapy/messages/{therapist_id}` - Get messages with therapist
-- `POST /api/therapy/send-message` - Send message to therapist
-- `GET /api/therapy/sessions` - Get user's therapy sessions
+### Therapy Management
+- Browse 10+ professional therapist profiles with credentials and ratings
+- Opt-in system to connect with multiple therapists
+- Real-time bidirectional messaging (polling-based)
+- Therapy homework with submission and feedback workflow
 
 ### Therapist Portal
-- `POST /api/therapist/login` - Therapist authentication
-- `GET /api/therapist/patients` - Get therapist's patients
-- `GET /api/therapist/messages/{user_id}` - Get messages with patient
-- `POST /api/therapist/send-message` - Send message to patient
+- Dedicated web interface for therapist workflows
+- Patient management dashboard with message counts and session stats
+- Bidirectional messaging with patients
+
+### Gamification & Achievements
+- Achievement system with unlockable badges
+- NeuraCoins rewards for consistent engagement
+- Streak tracking across moods, journal, and goals
+
+## API Reference
+
+### Authentication
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/auth/register` | Register a new user |
+| `POST` | `/api/auth/login` | Login and receive JWT token |
+| `GET`  | `/api/auth/google/login` | Initiate Google OAuth flow |
+| `GET`  | `/api/auth/google/callback` | Handle OAuth callback |
+| `GET`  | `/api/auth/me` | Get current user profile |
+
+### Chatbot
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/chatbot/message` | Send message to AI chatbot |
+| `GET`  | `/api/chatbot/history` | Retrieve conversation history |
+
+### Resources
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/resources/music` | Music playlists (12 items) |
+| `GET` | `/api/resources/meditation` | Meditation guides (12 items) |
+| `GET` | `/api/resources/books` | Recommended books (12 items) |
+| `GET` | `/api/resources/podcasts` | Mental health podcasts (12 items) |
+| `GET` | `/api/resources/videos` | Educational videos (12 items) |
+
+### Quizzes
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET`  | `/api/quiz/list` | List available quizzes |
+| `GET`  | `/api/quiz/{id}` | Get quiz questions |
+| `POST` | `/api/quiz/{id}/submit` | Submit quiz answers |
+| `GET`  | `/api/quiz/results/{id}` | Get quiz results |
+
+### Premium & Therapy
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/premium/purchase` | Purchase NeuraLife+ (1000 coins) |
+| `GET`  | `/api/therapy/therapists` | List all therapists |
+| `POST` | `/api/therapy/opt-in` | Connect with a therapist |
+| `GET`  | `/api/therapy/my-therapists` | Get connected therapists |
+| `GET`  | `/api/therapy/messages/{therapist_id}` | Get messages |
+| `POST` | `/api/therapy/send-message` | Send message to therapist |
+| `GET`  | `/api/therapy/sessions` | Get therapy sessions |
+
+### Therapist Portal
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/therapist/login` | Therapist authentication |
+| `GET`  | `/api/therapist/patients` | Get therapist's patients |
+| `GET`  | `/api/therapist/messages/{user_id}` | Get messages with patient |
+| `POST` | `/api/therapist/send-message` | Send message to patient |
 
 ## Environment Variables
 
-**Backend (.env):**
+Create a `.env` file in the `backend/` directory (see `.env.example`):
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DATABASE_URL` | SQLAlchemy database URI | `sqlite:///./mental_health.db` |
+| `SECRET_KEY` | JWT signing secret | (required) |
+| `ALGORITHM` | JWT algorithm | `HS256` |
+| `ACCESS_TOKEN_EXPIRE_MINUTES` | Token expiry | `30` |
+| `GOOGLE_API_KEY` | Google Gemini API key for chatbot | (required for chatbot) |
+| `GOOGLE_CLIENT_ID` | Google OAuth client ID | (optional) |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth client secret | (optional) |
+| `GOOGLE_REDIRECT_URI` | OAuth redirect URI | `http://localhost:8000/api/auth/google/callback` |
+
+## Development
+
+### Running in Development Mode
+
+```bash
+# Backend with auto-reload
+cd backend && uvicorn app.main:app --reload --port 8000
+
+# Frontend with HMR
+cd frontend && npm run dev
 ```
-DATABASE_URL=sqlite:///./mental_health.db
-SECRET_KEY=your-secret-key-here
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
 
-# Google OAuth (NEW - See OAUTH_README.md for setup)
-GOOGLE_CLIENT_ID=your-google-client-id
-GOOGLE_CLIENT_SECRET=your-google-client-secret
-GOOGLE_REDIRECT_URI=http://localhost:8000/api/auth/google/callback
-```
+### Project Scripts
 
-### 🔐 Google OAuth Setup
+| Script | Description |
+|--------|-------------|
+| `scripts/start_backend.bat` | Start the backend server |
+| `scripts/start_frontend.bat` | Start the frontend dev server |
+| `scripts/setup_everything.bat` | Full project setup |
+| `scripts/setup_users.bat` | Create test users and therapists |
 
-Your app now supports **Google OAuth authentication**! Users can sign in with Google.
+### Code Style
 
-**📖 Complete Setup Guide:** See `OAUTH_README.md` or `QUICK_REFERENCE.md`
-
-**Quick Steps:**
-1. Get OAuth credentials from Google Cloud Console
-2. Add to `backend/.env`
-3. Restart backend
-4. Test at http://localhost:5173
-
-**Files:**
-- `QUICK_REFERENCE.md` - 5-minute quick start
-- `GOOGLE_OAUTH_SETUP.md` - Detailed setup steps
-- `OAUTH_SETUP_GUIDE.md` - Complete integration guide
-- `OAUTH_README.md` - Overview and documentation index
-
-## Development Status
-
-- [x] Project structure created
-- [x] Backend with FastAPI
-- [x] Frontend with React + Tailwind
-- [x] User authentication (JWT)
-- [x] Resources library (60+ items with real links)
-- [x] AI Chatbot integration
-- [x] Mental health quiz system
-- [x] Premium subscription system
-- [x] NeuraCoins virtual currency
-- [x] Therapy session management
-- [x] Real-time messaging (polling-based)
-- [x] Therapist portal (separate webapp)
-- [x] Profile dropdown with premium status
-- [x] Calendar for therapy sessions
-- [ ] Video call integration
-- [ ] Mobile app (PWA conversion recommended)
-- [ ] Payment gateway integration
+- **Python:** PEP 8, type hints, docstrings on public functions
+- **JavaScript/React:** ESLint config included, functional components with hooks
+- **CSS:** Tailwind CSS utility-first approach
 
 ## Troubleshooting
 
 ### Database Issues
-If you encounter login errors or database-related problems:
 
-```powershell
-# Stop the backend server (Ctrl+C)
+```bash
+# Reset the database
 cd backend
-Remove-Item mental_health.db
-python create_dummy_users.py
-python create_dummy_therapists.py
+rm mental_health.db              # Windows: del mental_health.db
+python scripts/create_test_users.py
+python scripts/create_therapists.py
 python run.py
 ```
 
-### Port Already in Use
-If ports 8000, 5173, or 8080 are already in use:
-- Check for existing processes: `netstat -ano | findstr :<port>`
-- Kill the process: `taskkill /PID <process_id> /F`
+### Port Conflicts
+
+```bash
+# Find process using a port
+netstat -ano | findstr :<port>
+# Kill the process
+taskkill /PID <process_id> /F
+```
 
 ### CORS Errors
-The backend is configured to allow:
-- User Frontend: `http://localhost:5173`
-- Therapist Portal: `http://localhost:8080`
 
-If you change ports, update `backend/app/main.py` CORS settings.
+The backend allows requests from:
+- `http://localhost:5173` (Frontend)
+- `http://localhost:8080` (Therapist Portal)
+- `http://localhost:9000` (Admin Portal)
 
-## Tech Stack Details
+Update `backend/app/main.py` if you change ports.
 
-**Backend:**
-- FastAPI (modern Python web framework)
-- SQLite (database)
-- JWT authentication
-- Uvicorn server
-- SQLAlchemy ORM
+## Contributing
 
-**Frontend:**
-- React 18 with Vite
-- Tailwind CSS for styling
-- Axios for API calls
-- React Router DOM for navigation
-
-**Therapist Portal:**
-- Vanilla HTML/CSS/JavaScript
-- Python SimpleHTTPServer
-- Fetch API for backend communication
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) before submitting a pull request.
 
 ## License
 
-MIT
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
