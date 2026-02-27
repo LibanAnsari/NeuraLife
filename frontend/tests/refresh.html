@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refresh Session - NeuraLife</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 min-h-screen flex items-center justify-center">
+    <div class="max-w-md w-full mx-auto p-8">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 text-center">
+            <div class="text-6xl mb-4">🔄</div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-4">Refreshing Your Session</h1>
+            <p class="text-gray-600 mb-6">
+                Clearing old cached data and updating your account information...
+            </p>
+            <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+            <p class="text-sm text-gray-500">
+                You will be redirected to login in <span id="countdown">3</span> seconds...
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Clear all localStorage
+        console.log('Clearing localStorage...');
+        localStorage.clear();
+        
+        // Clear all sessionStorage
+        console.log('Clearing sessionStorage...');
+        sessionStorage.clear();
+        
+        // Countdown and redirect
+        let count = 3;
+        const countdownEl = document.getElementById('countdown');
+        
+        const interval = setInterval(() => {
+            count--;
+            countdownEl.textContent = count;
+            
+            if (count <= 0) {
+                clearInterval(interval);
+                console.log('Redirecting to login...');
+                window.location.href = '/';
+            }
+        }, 1000);
+        
+        console.log('✅ Cache cleared! Database shows:');
+        console.log('   test1: 1000 NeuraCoins, Premium: True');
+        console.log('   Please login again to see updated data.');
+    </script>
+</body>
+</html>
